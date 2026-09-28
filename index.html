@@ -70,7 +70,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 .flow .step{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:18px;line-height:1.35}
 .flow .arr{align-self:center;color:var(--gold);font-size:26px}
 
-.plan{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px;counter-reset:p}
+.plan{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:12px 28px;counter-reset:p}
 .plan div{font-size:22px;padding:14px 18px;background:var(--panel);border-radius:12px;border:1px solid var(--line);display:flex;gap:14px;align-items:center}
 .plan div::before{counter-increment:p;content:counter(p,decimal-leading-zero);font-family:var(--serif);color:var(--gold);font-size:24px}
 .who{font-size:13px;font-weight:700;color:var(--muted);margin-left:auto;white-space:nowrap}
@@ -78,7 +78,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 /* Титул */
 .title-slide h1{font-size:58px;margin-top:40px}
 .speakers{display:flex;gap:18px;margin-top:10px}
-.speaker{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 24px;min-width:260px}
+.speaker{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 24px;min-width:240px}
 .speaker span{display:block;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .speaker b{font-size:26px}
 .chips{display:flex;flex-wrap:wrap;gap:10px}
@@ -120,7 +120,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
     <div class="slides">
 
 <!-- 1 -->
-<section class="slide title-slide" data-speaker="Егоров Г., Халимбеков А.">
+<section class="slide title-slide" data-speaker="Егоров Г., Халимбеков А., Касаев Г.">
   <div style="display:flex;align-items:center;gap:20px;margin-top:24px">
     <div class="emblem">§</div>
     <div class="kicker" style="margin:0">Доклад · Прокурорский надзор</div>
@@ -131,6 +131,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
     <div class="speakers">
       <div class="speaker"><span>Докладчик</span><b>Егоров Г.</b></div>
       <div class="speaker"><span>Докладчик</span><b>Халимбеков А.</b></div>
+      <div class="speaker"><span>Докладчик</span><b>Касаев Г.</b></div>
     </div>
   </div>
 </section>
@@ -142,15 +143,15 @@ table.cmp td:first-child{font-weight:700;width:32%}
   <div class="body">
     <div class="plan">
       <div>Правовая основа <span class="who">Егоров</span></div>
-      <div>Надзор за приёмом сообщений <span class="who">Халимбеков</span></div>
       <div>Прокурор в системе УПК РФ <span class="who">Егоров</span></div>
-      <div>Полномочия: дознание и следствие <span class="who">Халимбеков</span></div>
       <div>Предмет надзора <span class="who">Егоров</span></div>
-      <div>Реформа 2007 года <span class="who">Халимбеков</span></div>
       <div>Основное предназначение <span class="who">Егоров</span></div>
-      <div>Итоговые решения и права <span class="who">Халимбеков</span></div>
-      <div>Шесть задач прокурора <span class="who">Егоров</span></div>
-      <div>Дискуссия и выводы <span class="who">Халимбеков</span></div>
+      <div>Шесть задач прокурора <span class="who">Халимбеков</span></div>
+      <div>Надзор за приёмом сообщений <span class="who">Халимбеков</span></div>
+      <div>Полномочия: дознание и следствие <span class="who">Халимбеков</span></div>
+      <div>Реформа 2007 года <span class="who">Халимбеков</span></div>
+      <div>Итоговые решения и права <span class="who">Касаев</span></div>
+      <div>Дискуссия и выводы <span class="who">Касаев</span></div>
     </div>
   </div>
 </section>
@@ -215,7 +216,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 </section>
 
 <!-- 7 -->
-<section class="slide" data-speaker="Егоров Г.">
+<section class="slide" data-speaker="Халимбеков А.">
   <div class="kicker">05 · Задачи прокурора</div>
   <h1>Шесть задач прокурора в досудебном производстве</h1>
   <div class="body">
@@ -286,7 +287,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 </section>
 
 <!-- 11 -->
-<section class="slide" data-speaker="Халимбеков А.">
+<section class="slide" data-speaker="Касаев Г.">
   <div class="kicker">09 · Итог расследования и права</div>
   <h1>Последнее слово до суда за прокурором</h1>
   <div class="body">
@@ -300,7 +301,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 </section>
 
 <!-- 12 -->
-<section class="slide" data-speaker="Халимбеков А.">
+<section class="slide" data-speaker="Касаев Г.">
   <div class="kicker">10 · Дискуссия</div>
   <h1>Факты закона и их интерпретации</h1>
   <div class="body">
@@ -315,7 +316,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 </section>
 
 <!-- 13 -->
-<section class="slide" data-speaker="Халимбеков А.">
+<section class="slide" data-speaker="Касаев Г.">
   <div class="kicker">11 · Выводы</div>
   <h1>Главное</h1>
   <div class="body">
@@ -330,7 +331,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
 </section>
 
 <!-- 14 -->
-<section class="slide" data-speaker="Егоров Г., Халимбеков А.">
+<section class="slide" data-speaker="Егоров Г., Халимбеков А., Касаев Г.">
   <div class="kicker">Спасибо за внимание</div>
   <h1>Вопросы?</h1>
   <div class="body">
@@ -344,7 +345,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
         <li style="font-size:18px">Приказ Генпрокуратуры России от 19.01.2017 № 33 (органы предварительного следствия)</li>
       </ul>
     </div>
-    <div class="speakers"><div class="speaker"><span>Докладчик</span><b>Егоров Г.</b></div><div class="speaker"><span>Докладчик</span><b>Халимбеков А.</b></div></div>
+    <div class="speakers"><div class="speaker"><span>Докладчик</span><b>Егоров Г.</b></div><div class="speaker"><span>Докладчик</span><b>Халимбеков А.</b></div><div class="speaker"><span>Докладчик</span><b>Касаев Г.</b></div></div>
   </div>
 </section>
 
@@ -402,8 +403,10 @@ table.cmp td:first-child{font-weight:700;width:32%}
   const box=document.getElementById('gamebox'),v=document.getElementById('gv');
   function use(src){v.src=src;v.load();}
   v.addEventListener('loadeddata',()=>{box.classList.add('has-video');v.play().catch(()=>{})});
-  v.addEventListener('error',()=>box.classList.remove('has-video'));
-  use('media/gameplay.mp4');
+  // сначала своё видео (media/gameplay.mp4), затем записанный 3D-раннер, иначе — анимация на canvas
+  const queue=['media/gameplay.mp4','media/runner-gameplay.mp4'];
+  v.addEventListener('error',()=>{box.classList.remove('has-video');if(queue.length)use(queue.shift())});
+  use(queue.shift());
   addEventListener('dragover',e=>{e.preventDefault();box.classList.add('drag')});
   addEventListener('dragleave',()=>box.classList.remove('drag'));
   addEventListener('drop',e=>{
