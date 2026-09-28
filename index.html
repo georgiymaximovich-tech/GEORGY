@@ -416,7 +416,8 @@ table.cmp td:first-child{font-weight:700;width:32%}
 /* ================= Процедурный раннер (замена видеоряду) ================= */
 (function(){
   const cv=document.getElementById('game'),ctx=cv.getContext('2d');
-  const W=cv.width,H=cv.height,HOR=H*0.34,CX=W/2,F=266,Z0=3.5,CAMH=5.5,L=1.6,FAR=85;
+  const K=2;cv.width=450*K;cv.height=800*K;
+  const W=450,H=800,HOR=H*0.34,CX=W/2,F=266,Z0=3.5,CAMH=5.5,L=1.6,FAR=85;
   let camX=0;
   const P=(x,y,z)=>{const s=F/(z+Z0);return{x:CX+(x-camX)*s,y:HOR+(CAMH-y)*s,s}};
   const rnd=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -452,8 +453,8 @@ table.cmp td:first-child{font-weight:700;width:32%}
     if(blocked(pl.lane,-1,13)){
       const opts=[-1,0,1].filter(i=>i!==pl.lane).sort((a,b)=>Math.abs(a-pl.lane)-Math.abs(b-pl.lane));
       let best=opts.find(i=>!blocked(i,-1.5,15));
-      if(best===undefined){let far=-1;for(const i of opts){const nz=Math.min(...objs.filter(o=>o.type==='train'&&o.lane===i&&o.z+o.len>0).map(o=>o.z),999);if(nz>far){far=nz;best=i}}}
-      pl.lane=best;
+      if(best===undefined){best=opts[0];let far=-Infinity;for(const i of opts){const nz=Math.min(...objs.filter(o=>o.type==='train'&&o.lane===i&&o.z+o.len>0).map(o=>o.z),999);if(nz>far){far=nz;best=i}}}
+      if(best!==undefined)pl.lane=best;
     } else if(Math.random()<.02){
       const c=objs.find(o=>o.type==='coin'&&o.z>3&&o.z<12&&o.lane!==pl.lane&&Math.abs(o.lane-pl.lane)===1);
       if(c&&!blocked(c.lane,-1.5,15))pl.lane=c.lane;
@@ -520,7 +521,8 @@ table.cmp td:first-child{font-weight:700;width:32%}
   }
 
   function frame(dt){
-    t+=dt; speed=Math.min(26,speed+dt*.12); const d=speed*dt; dist+=d;
+    ctx.setTransform(K,0,0,K,0,0);
+    t+=dt; speed=Math.min(21,speed+dt*.1); const d=speed*dt; dist+=d;
     spawnAcc+=d; if(spawnAcc>15){spawnAcc=0;spawnRow()}
     for(const o of objs){o.z-=d+(o.moving&&o.type==='train'?d*.35:0)}
     for(const b of side)b.z-=d;
@@ -565,6 +567,8 @@ table.cmp td:first-child{font-weight:700;width:32%}
     rr(W-132,12,120,40,12,'rgba(0,0,0,.35)');ctx.fillStyle='#ffd54a';ctx.beginPath();ctx.arc(W-108,32,11,0,7);ctx.fill();
     ctx.fillStyle='#fff';ctx.fillText(coins,W-88,42);
   }
+  // ?render — покадровый режим для записи видео (window.__step)
+  if(location.search.includes('render')){window.__step=dt=>{try{frame(dt)}catch(e){console.warn(e)}};return}
   let last=performance.now();
   function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;try{frame(dt)}catch(e){console.warn(e)}requestAnimationFrame(loop)}
   requestAnimationFrame(loop);
