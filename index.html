@@ -404,7 +404,7 @@ table.cmp td:first-child{font-weight:700;width:32%}
   function use(src){v.src=src;v.load();}
   v.addEventListener('loadeddata',()=>{box.classList.add('has-video');v.play().catch(()=>{})});
   // сначала своё видео (media/gameplay.mp4), затем записанный 3D-раннер, иначе — анимация на canvas
-  const queue=['media/gameplay.mp4','media/runner-gameplay.mp4'];
+  const queue=['media/gameplay.mp4','media/runner-gameplay.webm','media/runner-gameplay.mp4'];
   v.addEventListener('error',()=>{box.classList.remove('has-video');if(queue.length)use(queue.shift())});
   use(queue.shift());
   addEventListener('dragover',e=>{e.preventDefault();box.classList.add('drag')});
