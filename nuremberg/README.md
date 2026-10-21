@@ -44,7 +44,7 @@
 ```bash
 cd nuremberg/tools
 # видео (покадровый рендер в headless Chromium; нужен ffmpeg)
-node render.mjs press 40 ../media/press.mp4      # аналогично sand 40, tiles 40, wave 30
+node render.mjs press 40 ../media/press.mp4      # аналогично tiles 40, wave 30; sand 30 с параметрами 30 1
 # снимки слайдов и PowerPoint
 node shots.mjs /tmp/shots
 python3 build_pptx.py /tmp/shots ../Нюрнберг.pptx
