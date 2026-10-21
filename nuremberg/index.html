@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Нюрнбергский процесс</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --bg:#0e0d0c; --panel:#191612; --panel2:#201c16; --line:#332c22;
+  --text:#f4eee3; --muted:#a89e8d; --amber:#e3ab4f; --amber-soft:rgba(227,171,79,.13);
+  --red:#e0523f; --red-soft:rgba(224,82,63,.14); --green:#7fd19b; --blue:#8fb4ff;
+  --sans:"Manrope","Segoe UI",Roboto,Arial,sans-serif; --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#050505;color:var(--text);font-family:var(--sans);overflow:hidden}
+
+/* Сцена 1600×900, масштабируется под экран */
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;overflow:hidden;
+  background:
+    radial-gradient(900px 600px at 12% -10%,rgba(227,171,79,.10),transparent 70%),
+    radial-gradient(700px 500px at 70% 110%,rgba(224,82,63,.07),transparent 70%),
+    var(--bg);
+  display:grid;grid-template-columns:1fr 470px;gap:40px;padding:32px 40px 30px 64px}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;mask-image:linear-gradient(90deg,#000 0%,transparent 75%)}
+#stage.novideo{grid-template-columns:1fr 0}
+#stage.novideo #reel{display:none}
+
+#deck{position:relative;min-width:0;display:flex;flex-direction:column}
+.slides{position:relative;flex:1}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;
+  transform:translateY(14px);transition:opacity .35s ease,transform .35s ease,visibility .35s}
+.slide.active{opacity:1;visibility:visible;transform:none}
+
+.kicker{font-size:16px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);
+  display:flex;align-items:center;gap:14px;margin-top:10px}
+.kicker::after{content:"";height:2px;width:64px;background:var(--amber);opacity:.55}
+.kicker .tag{color:var(--bg);background:var(--red);border-radius:6px;padding:3px 9px;letter-spacing:.08em;font-size:13px}
+h1{font-family:var(--serif);font-weight:800;font-size:50px;line-height:1.1;margin:12px 0 24px;max-width:980px;letter-spacing:-.005em}
+h2{font-size:24px;font-weight:800;line-height:1.25;margin-bottom:8px}
+.lead{font-size:24px;line-height:1.45;color:#ddd5c7;max-width:960px}
+.muted{color:var(--muted)} b,strong{color:#fff;font-weight:800}
+.am{color:var(--amber)} .rd{color:var(--red)}
+.body{flex:1;display:flex;flex-direction:column;gap:22px;min-height:0;justify-content:center;padding-bottom:26px}
+
+.cards{display:grid;gap:14px}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;position:relative}
+.card p{font-size:20px;line-height:1.42;color:#d8d0c2}
+.card.hl{border-color:rgba(227,171,79,.55);background:linear-gradient(160deg,rgba(227,171,79,.10),var(--panel) 60%)}
+.card.red{border-color:rgba(224,82,63,.55);background:linear-gradient(160deg,rgba(224,82,63,.11),var(--panel) 60%)}
+.ref{display:inline-block;font-size:13px;font-weight:800;color:var(--amber);background:var(--amber-soft);border-radius:6px;padding:3px 8px;margin-top:10px;letter-spacing:.02em}
+.ref.r{color:#ff9b8c;background:var(--red-soft)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.stat .n{font-family:var(--serif);font-size:56px;font-weight:900;color:var(--amber);line-height:1}
+.stat .n small{font-size:24px}
+.stat p{font-size:17.5px;line-height:1.35;color:#d8d0c2;margin-top:8px}
+
+.quote{border-left:4px solid var(--amber);background:linear-gradient(90deg,var(--amber-soft),transparent);
+  padding:22px 28px;border-radius:0 14px 14px 0;font-size:26px;line-height:1.45;font-family:var(--serif);font-weight:600;font-style:italic}
+.quote .src{display:block;font-family:var(--sans);font-style:normal;font-weight:700;font-size:15px;color:var(--amber);margin-top:8px}
+
+ul.list{list-style:none;display:flex;flex-direction:column;gap:11px}
+ul.list li{font-size:23px;line-height:1.4;padding-left:30px;position:relative;color:#e6dfd2}
+ul.list li::before{content:"";position:absolute;left:3px;top:.5em;width:11px;height:11px;border-radius:2px;background:var(--amber);transform:rotate(45deg)}
+ul.list.sm li{font-size:19.5px}
+
+.fact{display:flex;gap:18px;align-items:flex-start}
+.fact .badge{flex:none;width:92px;height:92px;border-radius:18px;background:var(--red);color:#fff;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:900;font-size:44px;box-shadow:0 10px 30px rgba(224,82,63,.25)}
+.lesson{display:flex;gap:16px;align-items:center;background:var(--panel2);border:1px dashed rgba(227,171,79,.5);border-radius:14px;padding:16px 20px;font-size:20px;line-height:1.42;color:#e8e0d2}
+.lesson::before{content:"Для государственного обвинителя";flex:none;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--amber);border-radius:6px;padding:5px 8px;max-width:150px;line-height:1.25;text-align:center}
+
+/* Судьи и обвинители */
+.people{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.person{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px}
+.flag{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.person .nm{font-family:var(--serif);font-size:25px;font-weight:800;line-height:1.12}
+.person p{font-size:17.5px;line-height:1.38;color:#cfc7b8}
+
+/* Ход процесса */
+.flow{display:flex;gap:8px;align-items:stretch}
+.flow .st{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 12px;font-size:17px;line-height:1.32;color:#ddd5c7}
+.flow .st b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+.flow .ar{align-self:center;color:var(--amber);font-size:20px}
+
+table.v{width:100%;border-collapse:separate;border-spacing:0;font-size:19px;line-height:1.3}
+table.v td{padding:11px 12px;border-top:1px solid var(--line);vertical-align:top;color:#ddd5c7}
+table.v td:first-child{font-family:var(--serif);font-weight:900;font-size:26px;color:var(--amber);width:70px;white-space:nowrap}
+table.v td:nth-child(2){font-weight:800;color:#fff;width:210px}
+
+.plan{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(5,auto);gap:10px 24px;counter-reset:p}
+.plan div{font-size:22px;padding:16px 18px;background:var(--panel);border-radius:12px;border:1px solid var(--line);display:flex;gap:14px;align-items:center}
+.plan div::before{counter-increment:p;content:counter(p,decimal-leading-zero);font-family:var(--serif);font-weight:900;color:var(--amber);font-size:22px}
+.who{font-size:12px;font-weight:800;color:var(--muted);margin-left:auto;white-space:nowrap;letter-spacing:.04em}
+
+.title-slide h1{font-size:68px;margin-top:26px;line-height:1.02}
+.title-slide .sub{font-family:var(--serif);font-style:italic;font-size:30px;color:#e9dfcd;max-width:900px;line-height:1.3}
+.speakers{display:flex;gap:16px}
+.speaker{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 22px;min-width:270px}
+.speaker span{display:block;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.speaker b{font-size:24px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:16px;color:#d6cebf;background:rgba(255,255,255,.02)}
+.seal{width:92px;height:92px;border-radius:50%;border:2px solid var(--amber);display:grid;place-items:center;position:relative;
+  font-family:var(--serif);font-weight:900;font-size:26px;color:var(--amber);letter-spacing:.02em}
+.seal::after{content:"";position:absolute;inset:6px;border-radius:50%;border:1px dashed rgba(227,171,79,.5)}
+.years{font-family:var(--serif);font-weight:900;font-size:150px;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(227,171,79,.55);letter-spacing:-.01em;margin-top:18px;white-space:nowrap}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 14px;border-radius:8px;transform:rotate(-4deg);font-size:18px}
+
+.src-list{columns:2;column-gap:36px;font-size:16.5px;line-height:1.45;color:#cfc7b8}
+.src-list li{margin:0 0 10px 20px;break-inside:avoid}
+.src-list b{color:#fff}
+
+/* Нижняя панель */
+.foot{display:flex;align-items:center;gap:18px;padding-top:12px;font-size:14px;color:var(--muted)}
+.bar{flex:1;height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--red));transition:width .35s}
+.nav{display:flex;gap:8px}
+.nav button{width:38px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:18px;cursor:pointer}
+.nav button:hover{border-color:var(--amber)}
+.spk{color:var(--amber);font-weight:800}
+
+/* ---------- Колонка «рилс» ---------- */
+#reel{position:relative;border-radius:30px;overflow:hidden;background:#000;border:3px solid #26211a;
+  box-shadow:0 24px 70px rgba(0,0,0,.6);align-self:center;width:470px;height:836px}
+#reel video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .5s}
+#reel video.on{opacity:1}
+.ui{position:absolute;inset:0;pointer-events:none;color:#fff;font-family:var(--sans)}
+.ui .shade{position:absolute;left:0;right:0;bottom:0;height:260px;background:linear-gradient(transparent,rgba(0,0,0,.72))}
+.ui .shade.t{top:0;bottom:auto;height:110px;background:linear-gradient(rgba(0,0,0,.45),transparent)}
+.ui .segs{position:absolute;top:14px;left:14px;right:14px;display:flex;gap:4px}
+.ui .segs i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3)}
+.ui .segs i.done{background:rgba(255,255,255,.95)}
+.ui .tabs{position:absolute;top:34px;left:0;right:0;text-align:center;font-weight:700;font-size:17px;color:rgba(255,255,255,.65)}
+.ui .tabs b{color:#fff;border-bottom:2px solid #fff;padding-bottom:4px;margin-left:16px}
+.ui .side{position:absolute;right:12px;bottom:150px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.ui .side .av{width:52px;height:52px;border-radius:50%;border:2px solid #fff;background:radial-gradient(circle at 35% 30%,#f2c26b,#b5651d);display:grid;place-items:center;
+  font-family:var(--serif);font-weight:900;font-size:18px;color:#1a1208;margin-bottom:6px;position:relative}
+.ui .side .av::after{content:"+";position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--red);font:800 16px/20px var(--sans);color:#fff;text-align:center}
+.ui .side div{display:flex;flex-direction:column;align-items:center;font-size:13px;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.ui .side svg{width:40px;height:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.ui .cap{position:absolute;left:16px;right:78px;bottom:26px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.ui .cap .h{font-weight:800;font-size:17px;margin-bottom:6px}
+.ui .cap .t{font-size:16px;line-height:1.35;font-weight:600}
+.ui .cap .t em{font-style:normal;font-weight:800;color:#ffd58a}
+.ui .cap .mus{margin-top:8px;font-size:13px;opacity:.85;white-space:nowrap;overflow:hidden}
+.ui .disc{position:absolute;right:16px;bottom:24px;width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle,#e3ab4f 0 22%,#222 23% 60%,#444 61% 100%);border:3px solid #333;animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Режим экспорта: колонка пустая, рисуется только оверлей */
+body.export #reel{background:#000}
+body.export .slide{transition:none}
+body.export #reel video{display:none}
+body.overlay-only #stage{background:transparent!important}
+body.overlay-only #stage::before,body.overlay-only #deck{visibility:hidden}
+body.overlay-only #reel{background:transparent;border-color:transparent;box-shadow:none}
+body.overlay-only .disc{animation:none}
+
+#help{position:fixed;left:12px;bottom:10px;font-size:12px;color:#5e574c;font-family:var(--sans)}
+body.export #help{display:none}
+</style>
+</head>
+<body>
+<div id="stage">
+  <main id="deck">
+    <div class="slides">
+
+<!-- 1 -->
+<section class="slide title-slide" data-speaker="Егоров Г., Халимбеков А." data-clip="press"
+  data-cap="Суд над главными военными преступниками: <em>как работало обвинение</em> #нюрнберг #прокурорскийнадзор">
+  <div style="display:flex;align-items:center;gap:20px;margin-top:22px">
+    <div class="seal">МВТ</div>
+    <div>
+      <div class="kicker" style="margin:0">Доклад · Прокурорский надзор</div>
+      <div class="muted" style="font-size:17px;margin-top:6px">Тема: участие прокурора в рассмотрении уголовных дел судами</div>
+    </div>
+  </div>
+  <h1>Нюрнбергский процесс</h1>
+  <div class="sub">Обвинение на «суде народов»: малоизвестные страницы работы прокуроров четырёх держав</div>
+  <div class="years">1945—1946</div>
+  <div class="body" style="justify-content:flex-end;gap:26px">
+    <div class="chips"><span class="chip">20.11.1945 — 01.10.1946</span><span class="chip">Устав Международного военного трибунала</span><span class="chip">4 главных обвинителя</span><span class="chip">22 подсудимых</span></div>
+    <div class="speakers">
+      <div class="speaker"><span>Докладчик</span><b>Егоров Г.</b></div>
+      <div class="speaker"><span>Докладчик</span><b>Халимбеков А. М.</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="press"
+  data-cap="9 фактов, которые <em>не рассказывают на уроках истории</em> #план">
+  <div class="kicker">План доклада</div>
+  <h1>О чём пойдёт речь</h1>
+  <div class="body">
+    <div class="plan">
+      <div>Нюрнберг и наша тема <span class="who">Егоров</span></div>
+      <div>Процесс в цифрах <span class="who">Егоров</span></div>
+      <div>Комитет главных обвинителей <span class="who">Егоров</span></div>
+      <div>Как был устроен процесс <span class="who">Егоров</span></div>
+      <div>Документы, Паулюс, синхронный перевод <span class="who">Егоров</span></div>
+      <div>Перекрёстный допрос и «амнезия» Гесса <span class="who">Халимбеков</span></div>
+      <div>Катынь: обвинение без доказательств <span class="who">Халимбеков</span></div>
+      <div>«А судьи кто?» и гибель обвинителя <span class="who">Халимбеков</span></div>
+      <div>Приговор и особое мнение <span class="who">Халимбеков</span></div>
+      <div>Наследие и выводы <span class="who">Халимбеков</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="press"
+  data-cap="Государственный обвинитель — <em>не только российский институт</em> #упк #ст246">
+  <div class="kicker">01 · Связь с темой</div>
+  <h1>Государственный обвинитель: тогда и сейчас</h1>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card"><h2>Российское право сегодня</h2>
+        <ul class="list sm">
+          <li>Прокурор участвует в рассмотрении дел судами в случаях, предусмотренных процессуальным законом</li>
+          <li>В уголовном деле он поддерживает государственное обвинение, представляет доказательства и излагает суду мнение по существу обвинения</li>
+          <li>Если доказательства не подтверждают обвинение, прокурор обязан от него отказаться</li>
+        </ul>
+        <span class="ref">ст. 35 ФЗ «О прокуратуре РФ» · ст. 37, 246 УПК РФ · Приказ Генпрокурора № 376 от 30.06.2021</span></div>
+      <div class="card hl"><h2>Нюрнберг, 1945–1946</h2>
+        <ul class="list sm">
+          <li>Главные обвинители четырёх держав расследовали дело, собирали доказательства и составляли обвинительное заключение</li>
+          <li>В суде допрашивали свидетелей и подсудимых, выступали со вступительными и заключительными речами</li>
+          <li>Обвинение впервые поддерживали прокуроры государств с разными правовыми системами</li>
+        </ul>
+        <span class="ref">ст. 14, 15, 24 Устава Международного военного трибунала</span></div>
+    </div>
+    <p class="lead">Поэтому Нюрнберг удобно разбирать как учебный пример: те же функции обвинителя, но в предельных условиях.</p>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="press"
+  data-cap="Трибунал «жил» в Берлине, а <em>судил в Нюрнберге</em>. Почему? #факт">
+  <div class="kicker">02 · Процесс в цифрах</div>
+  <h1>Лондон, Берлин, Нюрнберг</h1>
+  <div class="body">
+    <div class="stats">
+      <div class="stat"><div class="n">8.08</div><p>1945 г.: СССР, США, Великобритания и Франция подписали Лондонское соглашение и Устав трибунала</p></div>
+      <div class="stat"><div class="n">19</div><p>государств позже присоединились к соглашению</p></div>
+      <div class="stat"><div class="n">24<small>→22</small></div><p>обвиняемых: Лей покончил с собой до суда, Круппа признали неспособным участвовать, Бормана судили заочно</p></div>
+      <div class="stat"><div class="n">4</div><p>пункта обвинения: заговор, преступления против мира, военные преступления, преступления против человечности</p></div>
+    </div>
+    <div class="cards c2">
+      <div class="card"><h2>Почему Берлин?</h2><p>Устав назвал Берлин постоянным местопребыванием трибунала. Там 18 октября 1945 года прошло первое заседание, на котором трибунал принял обвинительное заключение.</p><span class="ref">ст. 22 Устава</span></div>
+      <div class="card hl"><h2>Почему Нюрнберг?</h2><p>Дворец юстиции почти не пострадал от бомбёжек, и к нему примыкала тюрьма. Город был символичен: здесь проходили съезды НСДАП и в 1935 году были приняты расовые «Нюрнбергские законы».</p><span class="ref">ст. 22 Устава: «первый процесс состоится в Нюрнберге»</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="press"
+  data-cap="Главному обвинителю от СССР было <em>всего 38 лет</em> #руденко">
+  <div class="kicker">03 · Комитет главных обвинителей</div>
+  <h1>Четыре обвинителя, четыре правовые системы</h1>
+  <div class="body">
+    <div class="people">
+      <div class="person"><span class="flag">США</span><div class="nm">Роберт Х. Джексон</div><p>Член Верховного суда США. Ради процесса взял отпуск в суде и стал главным идеологом обвинения.</p></div>
+      <div class="person"><span class="flag">Великобритания</span><div class="nm">Хартли Шоукросс</div><p>Генеральный атторней. Повседневную работу в зале вёл его заместитель Дэвид Максвелл Файф.</p></div>
+      <div class="person"><span class="flag">Франция</span><div class="nm">Франсуа де Ментон</div><p>В январе 1946 года его сменил Огюст Шампетье де Риб.</p></div>
+      <div class="person" style="border-color:rgba(224,82,63,.55)"><span class="flag">СССР</span><div class="nm">Роман Руденко</div><p>Прокурор Украинской ССР, 38 лет. Позже почти 30 лет был Генеральным прокурором СССР (1953–1981).</p></div>
+    </div>
+    <div class="cards c2">
+      <div class="card"><h2>Комитет (ст. 14 Устава)</h2><p>Утверждал план работы каждого обвинителя, окончательно определял главных военных преступников, утверждал обвинительное заключение и вносил проекты правил процедуры.</p></div>
+      <div class="card"><h2>Обвинители (ст. 15 Устава)</h2><p>Расследовали дела, собирали и представляли доказательства, проводили предварительный допрос свидетелей и подсудимых, выступали обвинителями на суде.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="sand"
+  data-cap="Англо-американский перекрёстный допрос + континентальная процедура = <em>гибрид</em> #процесс">
+  <div class="kicker">04 · Как был устроен процесс</div>
+  <h1>Смешанная процедура: состязательность по Уставу</h1>
+  <div class="body">
+    <div class="flow">
+      <div class="st"><b>1</b>Оглашение обвинительного заключения</div><span class="ar">›</span>
+      <div class="st"><b>2</b>Подсудимый заявляет: виновен или нет</div><span class="ar">›</span>
+      <div class="st"><b>3</b>Вступительная речь обвинения</div><span class="ar">›</span>
+      <div class="st"><b>4</b>Доказательства обвинения, затем защиты</div><span class="ar">›</span>
+      <div class="st"><b>5</b>Речи защиты и обвинения</div><span class="ar">›</span>
+      <div class="st"><b>6</b>Последнее слово и приговор</div>
+    </div>
+    <div class="cards c3">
+      <div class="card"><h2>Права защиты</h2><p>Копия обвинительного заключения на понятном подсудимому языке, защитник, право представлять доказательства и допрашивать свидетелей обвинения.</p><span class="ref">ст. 16 Устава</span></div>
+      <div class="card"><h2>Свобода доказывания</h2><p>Трибунал не был связан формальными правилами о доказательствах и мог принять любые доказательства, которые считал имеющими доказательственную силу.</p><span class="ref">ст. 19 Устава</span></div>
+      <div class="card hl"><h2>Что знакомо нам</h2><p>Та же логика, что в гл. 37–38 УПК РФ: судебное следствие, прения, последнее слово. Обвинение первым представляет доказательства.</p><span class="ref">ст. 24 Устава · ст. 274, 292, 293 УПК РФ</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="sand"
+  data-cap="Нацистов осудили по <em>их же документам</em> #доказательства">
+  <div class="kicker"><span class="tag">Факт</span> 05 · Ставка на документы</div>
+  <h1>«Процесс по документам»: свидетелей было мало намеренно</h1>
+  <div class="body">
+    <p class="lead">Джексон сделал ставку на трофейные немецкие документы: приказы, протоколы, отчёты, подписанные самими подсудимыми. Свидетеля можно оспорить, а собственную подпись трудно.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">33</div><p>свидетеля обвинения дали устные показания против подсудимых</p></div>
+      <div class="stat"><div class="n">61</div><p>свидетель защиты, а также 19 подсудимых выступили в свою защиту</p></div>
+      <div class="stat"><div class="n">143</div><p>свидетеля защиты ответили письменно на вопросы (интеррогатории)</p></div>
+      <div class="stat"><div class="n">29.11</div><p>1945 г.: обвинение показало фильм о концлагерях, снятый при их освобождении</p></div>
+    </div>
+    <div class="lesson">Письменное доказательство, происхождение которого установлено, устойчивее к атаке защиты, чем показания. Именно поэтому обвинение строилось вокруг документов, а свидетели их дополняли.</div>
+    <p class="small muted" style="font-size:14px">Цифры приводятся по тексту приговора МВТ (раздел «Ход процесса»).</p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="sand"
+  data-cap="Фельдмаршал, сдавшийся под Сталинградом, <em>пришёл свидетелем обвинения</em> #паулюс">
+  <div class="kicker"><span class="tag">Факт</span> 06 · Свидетель-сюрприз</div>
+  <h1>11 февраля 1946 года: фельдмаршал Паулюс в зале суда</h1>
+  <div class="body">
+    <div class="fact">
+      <div class="badge">★</div>
+      <div class="lead" style="font-size:23px">Руденко вызвал в качестве свидетеля обвинения Фридриха Паулюса, командовавшего 6-й армией под Сталинградом. Паулюс показал, что нападение на СССР готовилось задолго до 22 июня 1941 года. Это подрывало версию защиты о «превентивной войне».</div>
+    </div>
+    <div class="cards c2">
+      <div class="card"><h2>Почему это сильный ход</h2><p>Свидетель из высшего командования вермахта, участник разработки плана «Барбаросса». Защите было сложно объявить его показания пропагандой: он говорил о том, в чём участвовал сам.</p></div>
+      <div class="card hl"><h2>Связь с нашей темой</h2><p>Порядок представления доказательств определяет сторона. Обвинитель сам решает, кого и когда вызвать, чтобы опровергнуть позицию защиты (ч. 1 ст. 274 УПК РФ).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-speaker="Егоров Г." data-clip="sand"
+  data-cap="Жёлтая лампа: <em>говорите медленнее</em>. Красная: стоп #перевод">
+  <div class="kicker"><span class="tag">Факт</span> 07 · Четыре языка</div>
+  <h1>Первый в истории суд с синхронным переводом</h1>
+  <div class="body">
+    <p class="lead">Процесс шёл на английском, русском, французском и немецком. Последовательный перевод растянул бы его в несколько раз, поэтому полковник армии США Леон Достер предложил синхронный перевод на оборудовании IBM: микрофоны, наушники и переключатель каналов.</p>
+    <div class="cards c3">
+      <div class="card"><h2>Каждый в одну сторону</h2><p>Синхронист переводил только на один язык. В смене за стеклянной перегородкой работали 12 синхронистов.</p></div>
+      <div class="card red"><h2>Лампы на трибуне</h2><p>Монитор переводчиков мог зажечь жёлтую лампу (говорить медленнее) или красную (остановиться и повторить). Лампы стояли у свидетельского места и трибуны обвинителя.</p></div>
+      <div class="card"><h2>Наследие</h2><p>После Нюрнберга синхронный перевод стал стандартом ООН и международных судов.</p></div>
+    </div>
+    <div class="lesson">Речь обвинителя в суде должна быть понятной тем, кто принимает решение. В Нюрнберге это требование было техническим: темп речи прокурора контролировала лампа.</div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="tiles"
+  data-cap="Перекрёстный допрос Геринга <em>пошёл не по плану</em> #джексон">
+  <div class="kicker"><span class="tag">Факт</span> 08 · Перекрёстный допрос</div>
+  <h1>Джексон против Геринга: когда обвинитель проигрывает раунд</h1>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card red"><h2>Март 1946 года</h2><p>Геринг уверенно держался на допросе, давал пространные ответы и перехватывал инициативу. Джексон раздражался и просил трибунал его остановить. Многие участники и историки считают этот допрос неудачей обвинения.</p></div>
+      <div class="card hl"><h2>Исправление</h2><p>Британский обвинитель Максвелл Файф перешёл к конкретным эпизодам, например к расстрелу 50 пленных британских лётчиков после побега из лагеря Stalag Luft III, и уличал Геринга документами.</p></div>
+    </div>
+    <div class="lesson">Перекрёстный допрос — главное оружие обвинителя и самое рискованное. Короткие закрытые вопросы, опора на документы и готовность передать допрос коллеге работают лучше, чем спор с подсудимым.</div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="tiles"
+  data-cap="Гесс «потерял память»… а потом <em>сам признался в симуляции</em> #гесс">
+  <div class="kicker"><span class="tag">Факт</span> 09 · Способность участвовать в процессе</div>
+  <h1>Амнезия Рудольфа Гесса</h1>
+  <div class="body">
+    <div class="fact">
+      <div class="badge">?</div>
+      <div class="lead" style="font-size:23px">30 ноября 1945 года защита Гесса просила приостановить процесс: подсудимый якобы потерял память и не может защищаться. Неожиданно Гесс сам заявил, что симулировал амнезию «по тактическим соображениям». Трибунал признал его способным участвовать в процессе.</div>
+    </div>
+    <div class="cards c2">
+      <div class="card"><h2>Позиция обвинения</h2><p>Комиссии врачей, в том числе советских, не нашли у Гесса психического заболевания. Обвинение возражало против приостановления: участвовать в суде он может.</p></div>
+      <div class="card hl"><h2>Сегодня в России</h2><p>Тот же вопрос решается через экспертизу: психическое состояние подсудимого может стать основанием для приостановления дела или применения принудительных мер медицинского характера.</p><span class="ref">ст. 196, 238, гл. 51 УПК РФ</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="tiles"
+  data-cap="Обвинение включило Катынь в дело, а <em>приговор о ней промолчал</em> #бремядоказывания">
+  <div class="kicker"><span class="tag">Факт</span> 10 · Неподтверждённое обвинение</div>
+  <h1>Катынь: обвинение, которое суд не поддержал</h1>
+  <div class="body">
+    <div class="cards c3">
+      <div class="card"><h2>Обвинение</h2><p>По настоянию советской стороны в обвинительное заключение включили расстрел 11 000 польских военнопленных в Катынском лесу и приписали его Германии. Американцы и британцы сомневались.</p></div>
+      <div class="card"><h2>Суд</h2><p>1–3 июля 1946 года трибунал выслушал свидетелей обеих сторон. В приговоре Катынь не упомянута вовсе, её нет даже в особом мнении советского судьи Никитченко.</p></div>
+      <div class="card red"><h2>Развязка</h2><p>13 апреля 1990 года СССР официально признал, что расстрел совершил НКВД.</p><span class="ref r">Заявление ТАСС, 13.04.1990</span></div>
+    </div>
+    <div class="lesson">Бремя доказывания лежит на обвинении. Если доказательства не подтверждают обвинение, суд его не примет, а прокурор по российскому закону обязан от него отказаться (ч. 2 ст. 14, ч. 7 ст. 246 УПК РФ).</div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="tiles"
+  data-cap="Защита Дёница <em>получила показания американского адмирала</em> #tuquoque">
+  <div class="kicker"><span class="tag">Факт</span> 11 · «А вы сами?»</div>
+  <h1>Когда защита бьёт по обвинителям</h1>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card hl"><h2>Дёниц и адмирал Нимиц</h2><p>Адвокат гросс-адмирала Дёница Отто Кранцбюлер получил письменные ответы командующего Тихоокеанским флотом США Честера Нимица: американские подводные лодки с первого дня вели против Японии неограниченную подводную войну.</p><p style="margin-top:8px"><b>Итог:</b> трибунал не учитывал нарушения правил подводной войны при назначении наказания Дёницу. Он получил 10 лет по другим пунктам.</p></div>
+      <div class="card"><h2>Секретные протоколы 1939 года</h2><p>Адвокат Гесса и Франка Альфред Зайдль пытался приобщить текст секретных протоколов к советско-германскому договору. 8 июня 1946 года трибунал отклонил аффидевит бывшего посла Гауса, сославшись на то, что копии документов не удостоверены.</p></div>
+    </div>
+    <div class="lesson">Довод «другие делали то же самое» (tu quoque) не оправдывает подсудимого, но может повлиять на оценку обвинения и наказание. Обвинитель должен заранее видеть слабые места своей позиции.</div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="tiles"
+  data-cap="Помощник советского обвинителя <em>погиб посреди процесса</em> #зоря">
+  <div class="kicker"><span class="tag">Факт</span> 12 · Белое пятно</div>
+  <h1>Гибель помощника обвинителя Николая Зори</h1>
+  <div class="body">
+    <div class="fact">
+      <div class="badge">†</div>
+      <div class="lead" style="font-size:23px">Николай Зоря, помощник главного обвинителя от СССР, выступал на процессе с разделами обвинения. 22 мая 1946 года его нашли в Нюрнберге мёртвым с огнестрельным ранением. Через два дня Руденко официально известил о «трагической гибели» помощника.</div>
+    </div>
+    <div class="cards c2">
+      <div class="card"><h2>Официальная версия</h2><p>Неосторожное обращение с оружием.</p><span class="ref">Извещение Р. А. Руденко, 24.05.1946</span></div>
+      <div class="card red"><h2>Что неизвестно</h2><p>Историки обсуждают версии самоубийства и иные. Документально ни одна из них не подтверждена, поэтому мы их не утверждаем.</p></div>
+    </div>
+    <p class="small muted" style="font-size:14px">Для доклада это пример того, как отделять установленный факт (дата и обстоятельства смерти, официальная версия) от интерпретаций.</p>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="wave"
+  data-cap="Советский судья <em>не согласился с приговором</em> и написал особое мнение #никитченко">
+  <div class="kicker">13 · Приговор: 30 сентября — 1 октября 1946</div>
+  <h1>Приговор и особое мнение</h1>
+  <div class="body">
+    <table class="v">
+      <tr><td>12</td><td>смертная казнь</td><td>Геринг, Риббентроп, Кейтель, Кальтенбруннер, Розенберг, Франк, Фрик, Штрейхер, Заукель, Йодль, Зейсс-Инкварт, Борман (заочно)</td></tr>
+      <tr><td>3</td><td>пожизненно</td><td>Гесс, Функ, Редер</td></tr>
+      <tr><td>4</td><td>срок</td><td>Шпеер и Ширах — 20 лет, Нейрат — 15, Дёниц — 10</td></tr>
+      <tr><td>3</td><td>оправданы</td><td>Шахт, Папен, Фриче</td></tr>
+    </table>
+    <div class="cards c2">
+      <div class="card"><h2>Организации</h2><p>Преступными признаны руководящий состав НСДАП, СС, СД и гестапо. Не признаны СА, имперское правительство, генштаб и верховное командование.</p></div>
+      <div class="card red"><h2>Особое мнение судьи Никитченко (СССР)</h2><p>Против оправдания Шахта, Папена и Фриче, за смертную казнь Гессу, за признание преступными правительства, генштаба и командования.</p></div>
+    </div>
+    <p class="small muted" style="font-size:14px">Геринг отравился 15 октября 1946 года, за несколько часов до казни. Остальных казнили в ночь на 16 октября.</p>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="wave"
+  data-cap="27 лет, первое дело в жизни и <em>22 обвинительных приговора</em> #ференц">
+  <div class="kicker"><span class="tag">Факт</span> 14 · Обвинители после Нюрнберга</div>
+  <h1>Бенджамин Ференц: первое дело в 27 лет</h1>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card hl"><h2>Процесс по делу айнзацгрупп (1947–1948)</h2><p>После главного процесса США провели в Нюрнберге ещё 12 процессов. На одном из них главным обвинителем стал 27-летний Бенджамин Ференц. Это было первое дело в его жизни.</p><p style="margin-top:8px">Он не вызвал ни одного свидетеля и построил обвинение на донесениях самих айнзацгрупп о массовых расстрелах. Осуждены все 22 подсудимых.</p></div>
+      <div class="card"><h2>Последний живой обвинитель</h2><p>Ференц всю жизнь добивался создания постоянного международного уголовного суда и дожил до его появления. Он умер в апреле 2023 года в 103 года, последним из обвинителей Нюрнберга.</p></div>
+    </div>
+    <div class="lesson">Пример того, как документы, собранные на стадии расследования, решают исход дела в суде.</div>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="wave"
+  data-cap="Что Нюрнберг <em>оставил праву</em> до сих пор #наследие">
+  <div class="kicker">15 · Наследие</div>
+  <h1>Что осталось от Нюрнберга в праве</h1>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card"><h2>Нюрнбергские принципы</h2><p>11 декабря 1946 года Генеральная Ассамблея ООН подтвердила принципы Устава и приговора (резолюция 95 (I)). В 1950 году Комиссия международного права сформулировала их в 7 положениях.</p></div>
+      <div class="card"><h2>Нет иммунитета должности и приказа</h2><p>Должностное положение подсудимого не освобождает от ответственности (ст. 7 Устава). Приказ начальника тоже не освобождает, но может смягчить наказание (ст. 8).</p></div>
+      <div class="card"><h2>Международные суды</h2><p>Трибуналы по Югославии (1993) и Руанде (1994), Римский статут 1998 года и Международный уголовный суд с независимой Канцелярией прокурора.</p></div>
+      <div class="card hl"><h2>Российское право</h2><p>Ст. 354.1 УК РФ (с 2014 года) устанавливает ответственность за отрицание фактов, установленных приговором Международного военного трибунала.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="slide" data-speaker="Халимбеков А." data-clip="wave"
+  data-cap="Главная мысль доклада <em>в одной цитате</em> #выводы">
+  <div class="kicker">16 · Выводы</div>
+  <h1>Что Нюрнберг говорит о роли прокурора в суде</h1>
+  <div class="body">
+    <div class="quote">«Мы никогда не должны забывать: по тем материалам, по которым мы судим этих подсудимых сегодня, история будет судить нас завтра».<span class="src">Р. Х. Джексон, вступительная речь, 21 ноября 1945 года</span></div>
+    <ul class="list">
+      <li>Обвинение выигрывает доказательствами, а не риторикой: документы оказались сильнее эффектных речей</li>
+      <li>Обвинитель отвечает за каждый пункт: Катынь показала, что недоказанное обвинение суд не примет</li>
+      <li>Состязательность требует от прокурора готовности к ошибкам и к контраргументам защиты</li>
+      <li>Функции государственного обвинителя в нашем УПК — та же модель, что сложилась в Нюрнберге</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="slide" data-speaker="Егоров Г., Халимбеков А." data-clip="wave"
+  data-cap="Спасибо за внимание! <em>Вопросы?</em> #источники">
+  <div class="kicker">Источники</div>
+  <h1>Литература и документы</h1>
+  <div class="body">
+    <ol class="src-list">
+      <li><b>Устав Международного военного трибунала</b> (приложение к Лондонскому соглашению от 08.08.1945), ст. 7, 8, 14–16, 19, 22, 24.</li>
+      <li><b>Приговор Международного военного трибунала</b> от 30.09–01.10.1946 (текст: Avalon Project, Yale Law School).</li>
+      <li>Стенограммы процесса: Trial of the Major War Criminals before the IMT, 42 т. («Синяя серия»), Нюрнберг, 1947–1949; заседания 30.11.1945, 11.02.1946, 01–03.07.1946, 08.06.1946.</li>
+      <li>Нюрнбергский процесс над главными немецкими военными преступниками: сб. материалов в 7 т. М., 1957–1961.</li>
+      <li>Федеральный закон «О прокуратуре Российской Федерации» от 17.01.1992 № 2202-1, ст. 35.</li>
+      <li>Уголовно-процессуальный кодекс РФ, ст. 14, 37, 196, 238, 246, 274, 292, 293.</li>
+      <li>Приказ Генерального прокурора РФ от 30.06.2021 № 376 «Об участии прокуроров в судебных стадиях уголовного судопроизводства».</li>
+      <li>Уголовный кодекс РФ, ст. 354.1 (ФЗ от 05.05.2014 № 128-ФЗ).</li>
+      <li>Резолюция Генеральной Ассамблеи ООН 95 (I) от 11.12.1946.</li>
+      <li>Извещение Р. А. Руденко о гибели Н. Д. Зори, 24.05.1946 (Электронная библиотека исторических документов, docs.historyrussia.org).</li>
+      <li>Gaiba F. The Origins of Simultaneous Interpretation: The Nuremberg Trial. Ottawa, 1998; USHMM: Translation in the Courtroom.</li>
+      <li>Hirsch F. Soviet Judgment at Nuremberg. Oxford University Press, 2020.</li>
+      <li>Сообщение ТАСС о Катынской трагедии, 13.04.1990.</li>
+      <li>USHMM: Benjamin Ferencz (биография), Einsatzgruppen Case.</li>
+    </ol>
+  </div>
+</section>
+
+    </div>
+    <div class="foot">
+      <span id="num">1 / 19</span>
+      <div class="bar"><i id="prog"></i></div>
+      <span>Докладчик: <span class="spk" id="spk"></span></span>
+      <div class="nav"><button id="prev" aria-label="Назад">‹</button><button id="next" aria-label="Вперёд">›</button></div>
+    </div>
+  </main>
+
+  <aside id="reel">
+    <video data-clip="press" muted loop playsinline preload="auto" src="media/press.mp4"></video>
+    <video data-clip="sand" muted loop playsinline preload="auto" src="media/sand.mp4"></video>
+    <video data-clip="tiles" muted loop playsinline preload="auto" src="media/tiles.mp4"></video>
+    <video data-clip="wave" muted loop playsinline preload="auto" src="media/wave.mp4"></video>
+    <div class="ui">
+      <div class="shade t"></div><div class="shade"></div>
+      <div class="segs" id="segs"></div>
+      <div class="tabs">Подписки <b>Рекомендации</b></div>
+      <div class="side">
+        <div class="av">МВТ</div>
+        <div><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.1C.9 8.6 3 5 6.6 5c2 0 3.4 1.1 4.4 2.5C12 6.1 13.4 5 15.4 5 19 5 21.1 8.6 19.6 11.9 17.5 16.4 12 21 12 21z"/></svg><span id="likes">1945</span></div>
+        <div><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3C6.5 3 2 6.6 2 11c0 2.5 1.4 4.7 3.6 6.1L5 21l4.2-2.3c.9.2 1.8.3 2.8.3 5.5 0 10-3.6 10-8s-4.5-8-10-8z"/></svg><span>403</span></div>
+        <div><svg viewBox="0 0 24 24" fill="#fff"><path d="M14 4l8 8-8 8v-5c-6 0-9.5 2-12 6 1-6 4-11 12-12V4z"/></svg><span>22</span></div>
+      </div>
+      <div class="cap">
+        <div class="h">@nuremberg.1945</div>
+        <div class="t" id="cap"></div>
+        <div class="mus">♫ оригинальный звук · Международный военный трибунал</div>
+      </div>
+      <div class="disc"></div>
+    </div>
+  </aside>
+</div>
+<div id="help">→/← листать · F полный экран · V скрыть видео</div>
+
+<script>
+const stage = document.getElementById('stage');
+const slides = [...document.querySelectorAll('.slide')];
+const vids = [...document.querySelectorAll('#reel video')];
+const segs = document.getElementById('segs');
+slides.forEach(() => segs.appendChild(document.createElement('i')));
+const Q = new URLSearchParams(location.search);
+if (Q.has('export')) document.body.classList.add('export');
+if (Q.has('overlay')) document.body.classList.add('export', 'overlay-only');
+let cur = 0;
+
+function fit() {
+  const s = Math.min(innerWidth / 1600, innerHeight / 900);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+function show(i) {
+  cur = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, k) => s.classList.toggle('active', k === cur));
+  const s = slides[cur];
+  document.getElementById('num').textContent = `${cur + 1} / ${slides.length}`;
+  document.getElementById('prog').style.width = `${(cur + 1) / slides.length * 100}%`;
+  document.getElementById('spk').textContent = s.dataset.speaker;
+  document.getElementById('cap').innerHTML = s.dataset.cap || '';
+  document.getElementById('likes').textContent = (1945 + cur * 137).toLocaleString('ru-RU');
+  [...segs.children].forEach((g, k) => g.classList.toggle('done', k <= cur));
+  vids.forEach(v => {
+    const on = v.dataset.clip === s.dataset.clip;
+    if (on && !v.classList.contains('on')) { v.play().catch(() => {}); }
+    v.classList.toggle('on', on);
+    if (!on) setTimeout(() => { if (!v.classList.contains('on')) v.pause(); }, 600);
+  });
+  if (!Q.has('export')) history.replaceState(null, '', '#' + (cur + 1));
+}
+addEventListener('resize', fit);
+addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(cur + 1); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(cur - 1); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key === 'f' || e.key === 'F' || e.key === 'а' || e.key === 'А') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+  else if (e.key === 'v' || e.key === 'V' || e.key === 'м' || e.key === 'М') stage.classList.toggle('novideo');
+});
+document.getElementById('prev').onclick = () => show(cur - 1);
+document.getElementById('next').onclick = () => show(cur + 1);
+window.__show = show;
+fit();
+show((parseInt(location.hash.slice(1)) || 1) - 1);
+</script>
+</body>
+</html>
