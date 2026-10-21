@@ -168,7 +168,7 @@ function makePress() {
       lastCycle = c;
       if (old) { scene.remove(old); old.geometry.dispose(); old.material.dispose(); }
       old = cur; cur = makeClay(clayIdx++);
-      cur.userData.y = TOP + 5.5; cur.userData.vy = 0;
+      cur.userData.y = TOP + 2.3; cur.userData.vy = 0;   // появляется под поднятой плитой
     }
     // новый шар падает и шлёпается
     const u = cur.userData;
@@ -185,6 +185,7 @@ function makePress() {
     const landSquash = tc < 0.9 ? 1 - 0.12 * u.wob * Math.abs(Math.sin(tc * 30)) : 1;
     deform(cur, u.s * landSquash, T);
     cur.position.set(0, u.y + H0 / 2 * u.s * landSquash, 0);
+    const pop = seg(tc, 0, 0.22); cur.scale.setScalar(pop < 1 ? 1 + 2.7 * (pop - 1) ** 3 + 1.7 * (pop - 1) ** 2 : 1);  // «выскакивание» с перелётом
     if (tc > 1.15 && tc < 2.05) cur.rotation.y += dt * 0.15;
     // скребок сдвигает прошлую лепёшку вправо, она уезжает
     if (old) {
