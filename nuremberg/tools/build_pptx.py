@@ -38,10 +38,10 @@ def duration(clip):
 
 
 def poster(clip, t):
-    p = shots / f'poster_{clip}_{t:.1f}.png'
+    p = shots / f'poster_{clip}_{t:.1f}.jpg'
     if not p.exists():
         subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{t:.2f}', '-i', str(ROOT / 'media' / f'{clip}.mp4'),
-                        '-frames:v', '1', str(p)], check=True)
+                        '-frames:v', '1', '-q:v', '3', str(p)], check=True)
     return p
 
 
@@ -61,7 +61,9 @@ durs = {c: duration(c) for c in set(clips)}
 seen = {}
 for i, clip in enumerate(clips, 1):
     s = prs.slides.add_slide(blank)
-    s.shapes.add_picture(str(shots / f'slide_{i:02d}.png'), 0, 0, W, H)
+    bg = shots / f'slide_{i:02d}.jpg'                   # фон в JPEG: файл заметно легче, чем с PNG
+    subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', str(shots / f'slide_{i:02d}.png'), '-q:v', '2', str(bg)], check=True)
+    s.shapes.add_picture(str(bg), 0, 0, W, H)
     k = seen.get(clip, 0); seen[clip] = k + 1
     start = (k * 7.3) % (durs[clip] - 2)               # каждый слайд — с нового места ролика
     mv = s.shapes.add_movie(str(ROOT / 'media' / f'{clip}.mp4'), vx, vy, vw, vh,
